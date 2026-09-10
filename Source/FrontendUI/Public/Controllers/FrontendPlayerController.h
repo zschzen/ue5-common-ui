@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+
 #include "FrontendPlayerController.generated.h"
 
 /**
@@ -12,6 +13,10 @@
 UCLASS()
 class FRONTENDUI_API AFrontendPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
+  protected:
+    //~ Begin APlayerController interface
+    ENGINE_API virtual void OnPossess( APawn * aPawn ) override;
+    //~ End APlayerController interface
 };
