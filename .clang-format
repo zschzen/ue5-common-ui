@@ -1,5 +1,7 @@
 ---
 BasedOnStyle: GNU
+DeriveLineEnding: true
+InsertNewlineAtEOF: true
 
 # Alignment
 AlignAfterOpenBracket: Align
@@ -61,27 +63,8 @@ CommentPragmas: "^ IWYU pragma:"
 # C++ features
 Cpp11BracedListStyle: true
 
-# File formatting
-DeriveLineEnding: true
-InsertNewlineAtEOF: true
-
-# Macros
-ForEachMacros: [RANGES_FOR, FOREACH]
-
-# Includes
-SortIncludes: CaseSensitive
-IncludeBlocks: Preserve
-IncludeCategories:
-  - Regex:           '^"rhio\.h"'
-    Priority:        0
-  - Regex:           '^"(rhio\/)'
-    Priority:        1
-  - Regex:           '^<.*'
-    Priority:        3
-  - Regex:           '^".*'
-    Priority:        2
-
 # Indentation
+AccessModifierOffset: -4
 IndentCaseBlocks: true
 IndentPPDirectives: AfterHash
 IndentWidth: 4
@@ -100,3 +83,21 @@ SpaceBeforeParens: Never
 SpacesInAngles: true
 SpacesInContainerLiterals: true
 SpacesInParentheses: true
+
+# Includes
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  # .generated.h listed first so it wins over the '.*' catch-all
+  - Regex: '\.generated\.h'
+    Priority: 3
+  - Regex: '^"CoreMinimal\.h"'
+    Priority: 1
+  - Regex: '.*'
+    Priority: 2
+
+# Macros
+ForEachMacros:
+  - RANGES_FOR
+  - FOREACH
+  - UE_ARRAY_COUNT
