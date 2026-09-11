@@ -25,8 +25,6 @@ UWidget_PrimaryLayout::RegisterWidgetStack( UPARAM( meta = ( Categories = "Front
             if( false == RegisteredWidgetStackMap.Contains( InStackTag ) )
                 {
                     RegisteredWidgetStackMap.Add( InStackTag, InStack );
-
-                    Debug::Print( TEXT( "Widget Stack registred on tag " ) + InStackTag.ToString() );
                 }
         }
 }
