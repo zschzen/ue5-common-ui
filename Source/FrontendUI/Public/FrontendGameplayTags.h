@@ -5,14 +5,19 @@
 #include "NativeGameplayTags.h"
 
 // Helper that holds the prefix and dot-version
-#define WIDGET_TAG( X, Name ) X( Frontend_WidgetStack_##Name, "Frontend.WidgetStack." #Name )
+#define WIDGETSTACK_TAG( X, Name ) X( Frontend_WidgetStack_##Name, "Frontend.WidgetStack." #Name )
+#define WIDGET_TAG( X, Name )      X( Frontend_Widget_##Name, "Frontend.Widget." #Name )
 
 // The tags list
 #define FRONTEND_WIDGET_TAGS( X )                                                                                      \
-    WIDGET_TAG( X, Model )                                                                                             \
-    WIDGET_TAG( X, GameMenu )                                                                                          \
-    WIDGET_TAG( X, GameHUD )                                                                                           \
-    WIDGET_TAG( X, Frontend )
+    /** Stacks */                                                                                                      \
+    WIDGETSTACK_TAG( X, Model )                                                                                        \
+    WIDGETSTACK_TAG( X, GameMenu )                                                                                     \
+    WIDGETSTACK_TAG( X, GameHUD )                                                                                      \
+    WIDGETSTACK_TAG( X, Frontend )                                                                                     \
+    /** Frontend Widgets */                                                                                            \
+    WIDGET_TAG( X, PressAnyKeyScreen )                                                                                 \
+    WIDGET_TAG( X, MainMenuScreen )
 
 namespace FrontendGameplayTags
 {
