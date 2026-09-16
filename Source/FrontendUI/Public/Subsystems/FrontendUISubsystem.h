@@ -4,11 +4,27 @@
 
 #include "CoreMinimal.h"
 
+#include "GameplayTagContainer.h"
 #include "Subsystems/GameInstanceSubsystem.h"
 
 #include "FrontendUISubsystem.generated.h"
 
+class UWidget_ActivatableBase;
 class UWidget_PrimaryLayout;
+
+UENUM( BlueprintType )
+enum class EAsyncPushWidgetState : uint8
+{
+    OnCreatedBeforePush,
+    AfterPush
+};
+
+/**
+ * Notifies a caller of PushSoftWidgetToStackAsync as the pushed widget's lifecycle progresses.
+ * Bind with CreateUObject or CreateWeakLambda: a destroyed target unbinds silently instead of
+ * firing into freed memory.
+ */
+DECLARE_DELEGATE_TwoParams( FOnAsyncPushWidgetState, EAsyncPushWidgetState, UWidget_ActivatableBase * );
 
 /**
  * 
@@ -28,7 +44,29 @@ public:
     UFUNCTION( BlueprintCallable )
     void RegisterCreatedPrimaryLayoutWidget( UWidget_PrimaryLayout * InCreatedWidget );
 
+    /**
+     * Asynchronously loads InSoftWidgetClass and pushes it onto the widget stack tagged
+     * InWidgetStackTag. Requires a primary layout to already be registered via
+     * RegisterCreatedPrimaryLayoutWidget.
+     *
+     * @param InWidgetStackTag       Tag identifying the target stack on the primary layout.
+     * @param InSoftWidgetClass      Soft class to load; must not be null.
+     * @param AsyncPushStateCallback Fired twice: OnCreatedBeforePush (widget constructed, not yet
+     *                               pushed) then AfterPush (widget live on the stack).
+     */
+    void PushSoftWidgetToStackAsync( const FGameplayTag &                     InWidgetStackTag,
+                                     TSoftClassPtr< UWidget_ActivatableBase > InSoftWidgetClass,
+                                     TFunction<void(EAsyncPushWidgetState,UWidget_ActivatableBase*)> AysncPushStateCallback );
+
 private:
+    /**
+     * Completion handler for the streamable load requested by PushSoftWidgetToStackAsync.
+     * The parameters are the payload bound at the CreateUObject call site, not arguments the
+     * streamable delegate itself carries -- FStreamableDelegate is a zero-argument delegate.
+     */
+    void OnSoftWidgetClassLoaded( FGameplayTag WidgetStackTag, TSoftClassPtr< UWidget_ActivatableBase > SoftWidgetClass,
+                                  FOnAsyncPushWidgetState AsyncPushStateCallback );
+
     UPROPERTY( Transient )
-    UWidget_PrimaryLayout * CreatePrimaryLayout;
+    TObjectPtr< UWidget_PrimaryLayout > CreatedPrimaryLayout;
 };
