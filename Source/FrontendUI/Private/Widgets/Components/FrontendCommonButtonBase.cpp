@@ -3,6 +3,7 @@
 #include "Widgets/Components/FrontendCommonButtonBase.h"
 
 #include "CommonTextBlock.h"
+#include "Subsystems/FrontendUISubsystem.h"
 
 void
 UFrontendCommonButtonBase::SetButtonLabel( FText InText )
@@ -27,8 +28,29 @@ UFrontendCommonButtonBase::NativeOnCurrentTextStyleChanged()
     Super::NativeOnCurrentTextStyleChanged();
 
     // Apply a valid style
-    if ( CommonTextBlock_Label && GetCurrentTextStyleClass() )
+    if( CommonTextBlock_Label && GetCurrentTextStyleClass() )
         {
             CommonTextBlock_Label->SetStyle( GetCurrentTextStyleClass() );
         }
+}
+
+void
+UFrontendCommonButtonBase::NativeOnHovered()
+{
+    Super::NativeOnHovered();
+
+    // Set description text
+    if( false == ButtonDescriptionText.IsEmpty() )
+        {
+            UFrontendUISubsystem::Get( this )->OnButtonDescriptionTextUpdated.Broadcast( this, ButtonDescriptionText );
+        }
+}
+
+void
+UFrontendCommonButtonBase::NativeOnUnhovered()
+{
+    Super::NativeOnUnhovered();
+
+    // Clear
+    UFrontendUISubsystem::Get( this )->OnButtonDescriptionTextUpdated.Broadcast( this, FText::GetEmpty() );
 }

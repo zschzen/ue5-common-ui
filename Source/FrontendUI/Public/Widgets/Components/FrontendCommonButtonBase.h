@@ -29,6 +29,8 @@ protected:
 
     //~ Begin UCommonButtonBase Interface
     virtual void NativeOnCurrentTextStyleChanged() override;
+    virtual void NativeOnHovered() override;
+    virtual void NativeOnUnhovered() override;
     //~ End UCommonButtonBase Interface
 
 private:

@@ -11,6 +11,7 @@
 
 class UWidget_ActivatableBase;
 class UWidget_PrimaryLayout;
+class UFrontendCommonButtonBase;
 
 UENUM( BlueprintType )
 enum class EAsyncPushWidgetState : uint8
@@ -25,6 +26,10 @@ enum class EAsyncPushWidgetState : uint8
  * firing into freed memory.
  */
 DECLARE_DELEGATE_TwoParams( FOnAsyncPushWidgetState, EAsyncPushWidgetState, UWidget_ActivatableBase * );
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams( FOnButtonDescriptionTextUpdatedDelegate,
+                                              // Params
+                                              UFrontendCommonButtonBase *, BroadcastingButton, FText, DescriptionText );
 
 /**
  * 
@@ -66,6 +71,9 @@ public:
     void PushSoftWidgetToStackAsync(
         const FGameplayTag & InWidgetStackTag, TSoftClassPtr< UWidget_ActivatableBase > InSoftWidgetClass,
         TFunction< void( EAsyncPushWidgetState, UWidget_ActivatableBase * ) > AysncPushStateCallback );
+
+    UPROPERTY( BlueprintAssignable )
+    FOnButtonDescriptionTextUpdatedDelegate OnButtonDescriptionTextUpdated;
 
 private:
     /**
