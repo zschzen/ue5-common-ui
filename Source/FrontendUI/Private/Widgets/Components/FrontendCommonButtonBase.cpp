@@ -20,3 +20,15 @@ UFrontendCommonButtonBase::NativePreConstruct()
 
     SetButtonLabel( ButtonDisplayText );
 }
+
+void
+UFrontendCommonButtonBase::NativeOnCurrentTextStyleChanged()
+{
+    Super::NativeOnCurrentTextStyleChanged();
+
+    // Apply a valid style
+    if ( CommonTextBlock_Label && GetCurrentTextStyleClass() )
+        {
+            CommonTextBlock_Label->SetStyle( GetCurrentTextStyleClass() );
+        }
+}

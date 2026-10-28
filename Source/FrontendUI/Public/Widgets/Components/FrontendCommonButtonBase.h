@@ -22,10 +22,16 @@ public:
     UFUNCTION( BlueprintCallable )
     void SetButtonLabel( FText InText );
 
-private:
+protected:
     //~ Begin UUserWidget Interface
     virtual void NativePreConstruct() override;
     //~ End UUserWidget Interface
+
+    //~ Begin UCommonButtonBase Interface
+    virtual void NativeOnCurrentTextStyleChanged() override;
+    //~ End UCommonButtonBase Interface
+
+private:
 
     //**** Bound Widgets ****//
     UPROPERTY( meta = ( BindWidgetOptional ) )
