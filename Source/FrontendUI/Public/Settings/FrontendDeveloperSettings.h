@@ -22,4 +22,13 @@ public:
     UPROPERTY( Config, EditAnywhere, Category = "Widget Reference",
                meta = ( ForceInlineRow, Categories = "Frontend.Widget" ) )
     TMap< FGameplayTag, TSoftClassPtr< UWidget_ActivatableBase > > FrontendWidgetMap {};
+
+    UPROPERTY( Config, EditAnywhere, Category = "Press Any Key" )
+    FText PressAnyKeyPrompt_KeyboardMouse {};
+
+    UPROPERTY( Config, EditAnywhere, Category = "Press Any Key" )
+    FText PressAnyKeyPrompt_Gamepad {};
+    
+    UPROPERTY( Config, EditAnywhere, Category = "Press Any Key" )
+    FText PressAnyKeyPrompt_Touch {};
 };

@@ -5,6 +5,7 @@
 #include "CoreTypes.h"
 #include "Engine/AssetManager.h"
 #include "FrontendDebugHelper.h"
+#include "FrontendFunctionLibrary.h"
 #include "Widgets/CommonActivatableWidgetContainer.h"
 #include "Widgets/Widget_ActivatableBase.h"
 #include "Widgets/Widget_PrimaryLayout.h"
@@ -27,6 +28,40 @@ UFrontendUISubsystem::RegisterCreatedPrimaryLayoutWidget( UWidget_PrimaryLayout 
     CreatedPrimaryLayout = InCreatedWidget;
 
     Debug::Print( TEXT( "Primary layout widget stored" ) );
+}
+
+void
+UFrontendUISubsystem::PushWidgetByTag( FGameplayTag InWidgetTag, FGameplayTag InWidgetStackTag )
+{
+    // Captured by value: the callback runs after an async load, by which time a reference would
+    // dangle
+    APlayerController * OwningPlayerController = GetGameInstance()->GetFirstLocalPlayerController();
+
+    PushSoftWidgetToStackAsync(
+        InWidgetStackTag,
+        UFrontendFunctionLibrary::GetFrontendSoftWidgetClassByTag( InWidgetTag ),
+        [OwningPlayerController]( EAsyncPushWidgetState InPushState, UWidget_ActivatableBase * PushedWidget )
+            {
+                switch( InPushState )
+                    {
+                    case EAsyncPushWidgetState::OnCreatedBeforePush:
+
+                        // Before activation: CommonUI routes input and focus through the owning player
+                        PushedWidget->SetOwningPlayer( OwningPlayerController );
+
+                        break;
+
+                    case EAsyncPushWidgetState::AfterPush:
+
+                        if( UWidget * WidgetToFocus = PushedWidget->GetDesiredFocusTarget() )
+                            {
+                                WidgetToFocus->SetFocus();
+                            }
+
+                        break;
+                    default: break;
+                    }
+            } );
 }
 
 void
